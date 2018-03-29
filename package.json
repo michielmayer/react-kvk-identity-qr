@@ -1,6 +1,6 @@
 {
   "name": "react-kvk-identity-qr",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "QR code generator voor het consumeren van KvK verklaringen over ondernemersidentiteiten",
   "main": "lib/index.js",
   "scripts": {
