@@ -28,7 +28,7 @@
     "axios": "^0.17.1",
     "prop-types": "^15.6.0",
     "qrcode.react": "^0.7.1",
-    "react": "^16.0.0",
+    "react": "^15.5.3",
     "uuid": "^3.2.1",
     "whatwg-fetch": "^2.0.3"
   },
