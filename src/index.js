@@ -130,7 +130,7 @@ class IdentityQR extends React.Component {
 
     if (status === 'approved') {
       if (this.props.secret) {
-        this.props.onAgree(null, attestResponse.attest)
+        this.props.onAgree(null, attestResponse)
       } else {
         this.props.onAgree(this.sessionKey)
       }

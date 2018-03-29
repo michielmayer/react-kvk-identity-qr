@@ -3,12 +3,13 @@ react-kvk-identity-qr
 [![npm version](https://badge.fury.io/js/react-kvk-identity-qr.svg)](https://badge.fury.io/js/react-kvk-identity-qr)
 
 ## Introduction
-A [React](https://facebook.github.io/react/) component for generating a QR code that represents a question about someones KvK identity. Questions are registered on the [kvk domain](https://identity.mayersoftwaredevelopment.nl). For each question an ID is generated which should be included on the questioners page. Based on this ID a QR code is generated. The user will scan this QR code with his [KvK identity App](https://identity.mayersoftwaredevelopment.nl) (follow this link on your Smart Phone). If the user agrees to the information exchange, the questioner will receive (part of) the users identity.   
 
-Creating a question happens after authentication, so the questioners identity is assured. Scanning a QR code by the user also happens after authentication, which assures the users identity. So both parties know for sure who they are dealing with.
+For general information about KvK Identity, please visit [the KvK Identity homepage](https://identity.mayersoftwaredevelopment.nl/home).
+For technical information about KvK Identity, and how to use it on the Dutch Blockchain Hackathon, please visit [the KvK Identity Developers Guide](https://identity.mayersoftwaredevelopment.nl/manual).
 
 ## Demo
 [sligro.michielmayer.nl/identity](http://sligro.michielmayer.nl/identity)
+[sligro.michielmayer.nl/identity/example](http://sligro.michielmayer.nl/identity/example)
 
 ## Known Issues
 - Due to browser implementations the camera can only be accessed over https or localhost.
@@ -27,49 +28,28 @@ class IdentityView extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      attests: []
+      attest: []
     }
   }
 
-  onShowQR = (question) => {
-    console.log('question: ', question)
-    /*
-      will output eg:
-
-      [{
-        '_id': '59b913a68fd3843665f61415',
-        'property': 'postalCode',
-        'label': 'Postcode',
-        'operator': 'eq',
-        'operatorString': 'is gelijk aan'
-        'compareValue': '3948',
-        'dimension': '',
-      }]
-    */
-  }
-
-  onAgree = (attests) => {
-    this.setState({attests})
+  onAgree = (sessionKey, data) => {
+    this.setState({attest: data.attest})
   }
 
   onReject = (message) => {
     console.log('rejection message: ', message)
   }
-  
-  onError = (error) => {
-    console.log('error: ', error)
-  }
 
   render() {
     return (
       <div>
-        <KvKIdentityQR questionId="59a535ea6af205300238b8f9" qrId="1234" onShowQR={this.onShowQR} onAgree={this.onAgree} onReject={this.onReject} onError ={this.onError} />
+        <KvKIdentityQR questionId="5a9fba89c5fde905a88843e0" secret="6f57be0d538757bb7a3343a9aa4e62023ec4aa86" onAgree={this.onAgree} onReject={this.onReject} />
         {
-          this.state.attests.map(attest => {
+          this.state.attest.map(subAttest => {
             return (
-              <div key={attest.property}>
-                <div>{`${attest.label} ${attest.operatorString} ${attest.compareValue} ${attest.dimension}?`}</div>
-                <div>{attest.value}</div>
+              <div key={subAttest.property}>
+                <div>{`${subAttest.label} ${subAttest.operatorString} ${subAttest.compareValueSelect || subAttest.compareValue} ${subAttest.dimension || ''}?`}</div>
+                <td>{(typeof subAttest.value === 'boolean') ? ((subAttest.value === true) ? 'Ja' : 'Nee') : subAttest.value}</td>
               </div>
             )
           })
@@ -87,12 +67,6 @@ class IdentityView extends React.Component {
 Type: `string`, Required
 
 The id that refers to the question, created on the kvk.nl domain.
-
-**qrId**
-
-Type: `string`, Required
-
-Id to identify this specific QR code instance. Required to be able to distinguish multiple QR codes using the same questionId.
 
 **onAgree**
 
