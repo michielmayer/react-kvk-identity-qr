@@ -29,7 +29,7 @@ _\* You can log in with any KvK number known by the [KvK Hackathon API](https://
 
 ## Implement KvK Identity widget for demo purposes
 
-The example below shows the minimal amount of code to implement the widget. You have to put the question ID as a property on the KvKIdentityQR element. 
+The example below shows the minimal amount of code to implement the widget. You have to put the question ID as a property on the `KvKIdentityQR` element. 
 
 You should set onAgree and onReject handler functions on the element, that will be fired when the user agrees to or rejects the information exchange.
 
@@ -75,7 +75,7 @@ class IdentityView extends React.Component {
 export default IdentityView
 ```
 
-**Note**: In this example we put the secret property on the KvKIdentityQR element. This is not secure! This is for demo purposes, to quickly demonstrate the possibilities, without having to implement a server endpoint. In production you want to fetch the attest through your server, on which the secret is securely stored. (see next chapter)
+**Note**: In this example we put the secret property on the `KvKIdentityQR` element. This is not secure! This is for demo purposes, to quickly demonstrate the possibilities, without having to implement a server endpoint. In production you want to fetch the attest through your server, on which the secret is securely stored. (see next chapter)
 
 The onAgree handler will be called with two parameters; a session key and a data object. In the data object, you will find the following information:
   - **attest**: The attest in JSON format.
@@ -86,7 +86,7 @@ The onAgree handler will be called with two parameters; a session key and a data
 
 If you want to implement the widget securely, you should not put the secret in your frontend code, as you did in the example above. You should get the attest through your server, on which the secret is securely stored.
 
-The setup is very similar. You should leave out the secret property of the KvKIdentityQR element. If you do that, the onAgree handler will be called with only a session key. This session key should be used in a POST request to your backend endpoint to get the attest.
+The setup is very similar. You should leave out the secret property of the `KvKIdentityQR` element. If you do that, the onAgree handler will be called with only a session key. This session key should be used in a POST request to your backend endpoint to get the attest.
 
 The example below shows the minimal amount of code to implement the widget on the client side.
 
@@ -104,8 +104,7 @@ class IdentityView extends React.Component {
   }
 
   onAgree = (sessionKey) => {
-    let url = __PROD__ ? 'https://sligro.michielmayer.nl/api/attest' : 'http://localhost:5001/api/attest'
-    axios.post(url, {sessionKey})
+    axios.post('url_of_your_server_endpoint', {sessionKey})
       .then(response => {
         this.setState({attest: response.data.attest})
       })
@@ -195,7 +194,7 @@ Your KvK secret key. For demo purposes, to avoid having to set up a backend endp
 
 Type: `function`, Required, Argument: `sessionKey, data`
 
-Fired when the user agrees to information exchange in his app. This function will be called with two parameters; sessionKey and data. If you didn't put a data-secret on the KvKIdentityQR element, data will be null, and the sessionKey should be used to get the attest.
+Fired when the user agrees to information exchange in his app. This function will be called with two parameters; sessionKey and data. If you didn't put a `secret` property on the `KvKIdentityQR` element, data will be null, and the sessionKey should be used to get the attest.
 
 **onReject**
 
