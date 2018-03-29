@@ -37,7 +37,7 @@ class IdentityQR extends React.Component {
     // window.open(`${baseUrlApp}/attest/eb98b290-2b6e-11e8-9b0e-a332084f452c`)
 
     let sessionKey
-    if (this.isMobile && linkTo !== 'web') {
+    if (this.isMobile && linkTo === 'app') {
       sessionKey = this.sessionKey = uuid()
       window.open(`${baseUrlApp}/attest/${this.sessionKey}`)
     }
@@ -50,14 +50,14 @@ class IdentityQR extends React.Component {
       this.sessionKey = session.sessionKey
 
       console.log('Session key: ', this.sessionKey)
-      setTimeout(this.getAttest.bind(this), 4000)
+      this.timeout = setTimeout(this.getAttest.bind(this), 4000)
 
-      this.props.onShowQR()
+      if (this.props.onShowQR) this.props.onShowQR()
 
       if (this.isMobile) {
         this.setState({status: 'scanned'})
         // window.open(document.URL, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes')
-        if (linkTo === 'web') {
+        if (linkTo !== 'app') {
           this.identityApp = window.open(`${baseUrlFrontend}/attest/${this.sessionKey}`, '_blank')
         }
       } else {
@@ -67,7 +67,7 @@ class IdentityQR extends React.Component {
       .catch(error => {
         // clearInterval(this.interval1)
         console.log('error: ', error)
-        this.props.onError(error)
+        if (this.props.onError) this.props.onError(error)
       })
 
       // let question = session.question.subQuestions.map(subQuestion => {
@@ -103,23 +103,23 @@ class IdentityQR extends React.Component {
       attestResponse = response.data
     } catch (error) {
       console.log(error.response)
-      this.props.onError(error)
+      if (this.props.onError) this.props.onError(error)
     }
 
     if (this.state.status === 'scanned' && attestResponse.status === 'new') {
-      return setTimeout(this.getAttest.bind(this), 2000)
+      return this.timeout = setTimeout(this.getAttest.bind(this), 2000)
     } // for mobile
 
     let status = attestResponse.status
 
     if (status === 'new') {
-      setTimeout(this.getAttest.bind(this), 2000)
+      this.timeout = setTimeout(this.getAttest.bind(this), 2000)
     }
 
     if (status === 'scanned') {
-      setTimeout(this.getAttest.bind(this), 2000)
+      this.timeout = setTimeout(this.getAttest.bind(this), 2000)
       if (this.state.status !== 'scanned') {
-        this.props.onScan()
+        if (this.props.onScan) this.props.onScan()
       }
     }
 
@@ -142,40 +142,109 @@ class IdentityQR extends React.Component {
     })
   }
 
+  qrContainerClicked = () => {
+    if (this.props.mode !== 'inline') {
+      this.setState({
+        status: null
+      })
+      clearTimeout(this.timeout)
+    }
+  }
+
   render() {
+    let label = this.props.label || 'Log in met KvK Identity'
+    let styles = {}
+
+    if (this.props.mode === 'inline') {
+      styles = {
+        qrContainer: {
+          color: '#000'
+        },
+        qrHeader: {
+          padding: '12px',
+          textAlign: 'center',
+        },
+        qrFooter: {
+          padding: '12px',
+          fontSize: '14px',
+          textAlign: 'center'
+        }
+      }
+    } else {
+      styles = {
+        qrContainer: {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,.7)',
+          display: 'flex',
+          alignItems: 'center',
+          zIndex: '1001',
+          justifyContent: 'center',
+          color: '#fff',
+          flexDirection: 'column'
+        },
+        qrHeader: {
+          padding: '24px',
+          textAlign: 'center',
+          fontSize: '22px'
+        },
+        qrFooter: {
+          padding: '12px',
+          fontSize: '14px',
+          textAlign: 'center'
+        }
+      }
+    }
+
     return (
       <div className={this.props.className} style={this.props.style}>
         {
           (!this.state.status) && (
             <div style={{textAlign: 'center'}}>
-              <a onClick={this.showQRHandler}>
-                {
-                  this.isMobile ? 'Log in met KvK ID app' : 'Toon QR code'
-                }
-              </a>
-              {
+              <div style={{textAlign: 'center', padding: '12px'}}>
+                <button onClick={this.showQRHandler}
+                  style={{padding: '8px 12px',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    cursor: 'pointer'}}>
+                  <img style={{width: '24px', paddingRight: '6px', verticalAlign: 'middle'}}
+                    src="https://identity.mayersoftwaredevelopment.nl/images/kvk-logo-small.png"
+                    alt="kvk" />
+                  <span>{label}</span>
+                </button>
+              </div>
+              {/*
                 this.isMobile && (
                   <div>
                     <br />
-                    <a onClick={() => this.showQRHandler('web')}>Log in met KvK ID app (in browser)</a>
-                    {/*<a onClick={this.debugOnclick}>debug mobile link</a>*/}
+                    <a onClick={() => this.showQRHandler('app')}>Log in met KvK ID app (in browser)</a>
+                    <a onClick={this.debugOnclick}>debug mobile link</a>
                   </div>
                 )
-              }
+              */}
             </div>
           )
         }
         {
           (this.state.status === 'new') && (
             <div>
-              <div style={{padding: '0 12px', textAlign: 'center'}}>
-                Scan de QR code hieronder met de KvK Identity app.
-              </div>
-              <div style={{padding: '12px 0', textAlign: 'center'}}>
-                <QRCode value={this.sessionKey} />
-              </div>
-              <div style={{padding: '0 12px', color: 'gray', fontSize: '0.9em', textAlign: 'center'}}>
-                Heeft u de KvK Identity app nog niet geinstalleerd, ga dan naar https://identity.mayersoftwaredevelopment.nl op uw SmartPhone.
+              <div style={styles.qrContainer} onClick={this.qrContainerClicked}>
+                <div style={styles.qrHeader}>
+                  Scan met de KvK Identity app.
+                </div>
+                <div style={{textAlign: 'center'}}>
+                  <QRCode value={this.sessionKey} />
+                </div>
+                {
+                  !this.isMobile && (
+                    <div style={styles.qrFooter}>
+                      Download de app op https://identity.mayersoftwaredevelopment.nl
+                    </div>
+                  )
+                }
               </div>
             </div>
           )
@@ -198,7 +267,8 @@ IdentityQR.propTypes = {
   onReject: PropTypes.func.isRequired,
   onError: PropTypes.func,
   style: PropTypes.object,
-  className: PropTypes.string
+  className: PropTypes.string,
+  label: PropTypes.string
 }
 
 export default IdentityQR
