@@ -1,0 +1,60 @@
+{
+  "name": "react-kvk-identity-qr",
+  "version": "0.1.23",
+  "description": "QR code generator voor het consumeren van KvK verklaringen over ondernemersidentiteiten",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src/index.js --out-file lib/index.js",
+    "build:watch": "babel src/index.js --watch --out-file lib/index.js",
+    "deploy": "./bin/deploy.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michielmayer/react-kvk-identity-qr.git"
+  },
+  "keywords": [
+    "QR",
+    "identity",
+    "kvk"
+  ],
+  "author": "Michiel Mayer",
+  "license": "Copyright (c) 2017, Michiel Mayer",
+  "bugs": {
+    "url": "https://github.com/michielmayer/react-kvk-identity-qr/issues"
+  },
+  "homepage": "https://github.com/michielmayer/react-kvk-identity-qr#readme",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "prop-types": "^15.6.0",
+    "qrcode.react": "^0.7.1",
+    "react": "^16.0.0",
+    "uuid": "^3.2.1",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "6.1.2",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-react-constant-elements": "^6.23.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.2.12",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "babel-runtime": "^6.26.0",
+    "babel-types": "^6.26.0",
+    "eslint": "3.10.2",
+    "eslint-config-standard": "5.3.5",
+    "eslint-config-standard-react": "3.0.0",
+    "eslint-plugin-babel": "3.3.0",
+    "eslint-plugin-flow-vars": "0.4.0",
+    "eslint-plugin-promise": "2.0.0",
+    "eslint-plugin-react": "5.2.2",
+    "eslint-plugin-standard": "2.0.0"
+  }
+}
