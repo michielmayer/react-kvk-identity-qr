@@ -5,13 +5,13 @@ import axios from 'axios'
 import uuid from 'uuid/v1'
 
 let baseUrl = 'https://identity.mayersoftwaredevelopment.nl'
-if (process.env.NODE_ENV === 'development') {
-  baseUrl = 'http://localhost:5010'
-}
+// if (process.env.NODE_ENV === 'development') {
+//   baseUrl = 'http://localhost:5010'
+// }
 let baseUrlFrontend = 'https://identity.mayersoftwaredevelopment.nl'
-if (process.env.NODE_ENV === 'development') {
-  baseUrlFrontend = 'http://localhost:3010'
-}
+// if (process.env.NODE_ENV === 'development') {
+//   baseUrlFrontend = 'http://localhost:3010'
+// }
 let baseUrlApp = 'identity://kvk.nl'
 let pollTries = 0
 let maxAmountofPolls = 150 // 360
