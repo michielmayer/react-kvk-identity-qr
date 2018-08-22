@@ -33,11 +33,10 @@ class IdentityQR extends React.Component {
     this.isMobile = mobileCheck()
   }
 
-  showQRHandler = (linkTo) => {
+  showQRHandler = () => {
     // window.open(`${baseUrlApp}/attest/eb98b290-2b6e-11e8-9b0e-a332084f452c`)
-
     let sessionKey
-    if (this.isMobile && linkTo === 'app') {
+    if (this.isMobile && this.props.linkTo !== 'webapp') {
       sessionKey = this.sessionKey = uuid()
       window.open(`${baseUrlApp}/attest/${this.sessionKey}`)
     }
@@ -57,7 +56,7 @@ class IdentityQR extends React.Component {
       if (this.isMobile) {
         this.setState({status: 'scanned'})
         // window.open(document.URL, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes')
-        if (linkTo !== 'app') {
+        if (this.props.linkTo === 'webapp') {
           this.identityApp = window.open(`${baseUrlFrontend}/attest/${this.sessionKey}`, '_blank')
         }
       } else {
@@ -268,7 +267,8 @@ IdentityQR.propTypes = {
   onError: PropTypes.func,
   style: PropTypes.object,
   className: PropTypes.string,
-  label: PropTypes.string
+  label: PropTypes.string,
+  linkTo: PropTypes.string,
 }
 
 export default IdentityQR
